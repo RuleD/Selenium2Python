@@ -49,63 +49,67 @@ print(title)
 now_url=driver.current_url
 print(now_url)
 '''
-driver.get("https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=c50a23db-fc07-48ed-a471-e839aa6887d5")
-parent_window = driver.current_window_handle
-#print(parent_window)
-pageTotal = 0
-try:
-    pageTotal =int(driver.find_element_by_css_selector("div#ctl00_ContentPlaceHolder1_Pager>table>tbody>tr>td>font:nth-child(2)>b").text)
-except Exception:
-    driver.refresh()
-    time.sleep(5)
-    pageTotal =int(driver.find_element_by_css_selector("div#ctl00_ContentPlaceHolder1_Pager>table>tbody>tr>td>font:nth-child(2)>b").text)
-#获取总页数
-print("获取总页数："+str(pageTotal))
 
-for page in range(pageTotal):
-    pagecurrent=page+1
-    print("当前所在页："+str(pagecurrent))
-    if pagecurrent > 1:
-        #翻页
-        jsPage = "__doPostBack('ctl00$ContentPlaceHolder1$Pager','"+str(pagecurrent)+"')"
-        driver.execute_script(jsPage)
-        time.sleep(10)
-    #获取当前页所有的项目循环遍历
-    projects = driver.find_elements_by_css_selector("table#ctl00_ContentPlaceHolder1_Datagrid1>tbody>tr")
-    #print(len(projects))
-    for project in projects:
-        if(project.get_attribute("class") == "RowItemsStyle" or project.get_attribute("class") == "RowStyle"):
-            tds = project.find_elements_by_tag_name("td")#获取单挑项目行的所有信息
-            #for td in tds:
-            #    print(td.text)
-            if tds[1].text not in projectDicts.keys():#如果当前遍历的项目不是需要更改的项目，直接跳过
-                continue
-            name = tds[2].text.replace('（','(').split('(')[0].replace(' ','')#当前遍历项目的负责人
-            if name not in projectLeaders:#如果当前遍历项目的负责人和需要更改项目的负责人不一致，直接跳过
-                continue
+kfzUrls=["https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=c50a23db-fc07-48ed-a471-e839aa6887d5"]
 
-            project = projectDicts[tds[1].text]#当前需要更改的项目信息
-            ddlIsComplete = rectificationState[project[3]]#是否整改完成
-            dtbYuJiTime = project[2]#是否整改完成
+for kfzUrl in kfzUrls:
+    driver.get(kfzUrl)
+    parent_window = driver.current_window_handle
+    #print(parent_window)
+    pageTotal = 0
+    try:
+        pageTotal =int(driver.find_element_by_css_selector("div#ctl00_ContentPlaceHolder1_Pager>table>tbody>tr>td>font:nth-child(2)>b").text)
+    except Exception:
+        driver.refresh()
+        time.sleep(5)
+        pageTotal =int(driver.find_element_by_css_selector("div#ctl00_ContentPlaceHolder1_Pager>table>tbody>tr>td>font:nth-child(2)>b").text)
+    #获取总页数
+    print("获取总页数："+str(pageTotal))
 
-            #进入编辑页面
-            tds.pop().click()
-            time.sleep(3)
-            #print(len(driver.window_handles))
-            for handle in driver.window_handles:
-                if handle != parent_window:
-                    #print(driver.current_url)
-                    driver.switch_to.window(handle)
-                    #print(driver.current_url)
-                    Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlIsComplete")).select_by_value(ddlIsComplete)
-                    driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").clear()
-                    driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").send_keys(dtbYuJiTime)
-                    #js = "var completeDate=document.getElementById('ctl00_ContentPlaceHolder1_dtbYuJiTime'); completeDate.value='"+completedate+"'"
-                    #driver.execute_script(js)
-                    driver.find_element_by_id("ctl00_ContentPlaceHolder1_btnSave").click()
-                    element = WebDriverWait(driver,10,2).until(EC.alert_is_present())#显示等待10s
-                    element.accept()
-                    driver.switch_to.window(parent_window)
-                    print(tds[1].text+","+name)
+    for page in range(pageTotal):
+        pagecurrent=page+1
+        print("当前所在页："+str(pagecurrent))
+        if pagecurrent > 1:
+            #翻页
+            jsPage = "__doPostBack('ctl00$ContentPlaceHolder1$Pager','"+str(pagecurrent)+"')"
+            driver.execute_script(jsPage)
+            time.sleep(10)
+        #获取当前页所有的项目循环遍历
+        projects = driver.find_elements_by_css_selector("table#ctl00_ContentPlaceHolder1_Datagrid1>tbody>tr")
+        #print(len(projects))
+        for project in projects:
+            if(project.get_attribute("class") == "RowItemsStyle" or project.get_attribute("class") == "RowStyle"):
+                tds = project.find_elements_by_tag_name("td")#获取单挑项目行的所有信息
+                #for td in tds:
+                #    print(td.text)
+                if tds[1].text not in projectDicts.keys():#如果当前遍历的项目不是需要更改的项目，直接跳过
+                    continue
+                name = tds[2].text.replace('（','(').split('(')[0].replace(' ','')#当前遍历项目的负责人
+                if name not in projectLeaders:#如果当前遍历项目的负责人和需要更改项目的负责人不一致，直接跳过
+                    continue
+
+                project = projectDicts[tds[1].text]#当前需要更改的项目信息
+                ddlIsComplete = rectificationState[project[3]]#是否整改完成
+                dtbYuJiTime = project[2]#是否整改完成
+
+                #进入编辑页面
+                tds.pop().click()
+                time.sleep(3)
+                #print(len(driver.window_handles))
+                for handle in driver.window_handles:
+                    if handle != parent_window:
+                        #print(driver.current_url)
+                        driver.switch_to.window(handle)
+                        #print(driver.current_url)
+                        Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlIsComplete")).select_by_value(ddlIsComplete)
+                        driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").clear()
+                        driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").send_keys(dtbYuJiTime)
+                        #js = "var completeDate=document.getElementById('ctl00_ContentPlaceHolder1_dtbYuJiTime'); completeDate.value='"+completedate+"'"
+                        #driver.execute_script(js)
+                        driver.find_element_by_id("ctl00_ContentPlaceHolder1_btnSave").click()
+                        element = WebDriverWait(driver,10,2).until(EC.alert_is_present())#显示等待10s
+                        element.accept()
+                        driver.switch_to.window(parent_window)
+                        print(tds[1].text+","+name)
 
 driver.quit()
