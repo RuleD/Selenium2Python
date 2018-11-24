@@ -16,3 +16,8 @@ for projectData in projectDatas:
 print(rectificationState.items())
 print(projectDicts.items())
 print(projectLeaders)
+
+# newline:表示换行，默认情况下都是'\n'
+file = open('writer.csv', 'w', encoding='GB2312', newline='')
+writer = csv.writer(file)
+writer.writerows(projectDicts.values())

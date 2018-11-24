@@ -50,9 +50,8 @@ now_url=driver.current_url
 print(now_url)
 '''
 
-kfzUrls=["https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=c50a23db-fc07-48ed-a471-e839aa6887d5"]
-
-for kfzUrl in kfzUrls:
+try:
+    kfzUrl="https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=c50a23db-fc07-48ed-a471-e839aa6887d5"
     driver.get(kfzUrl)
     parent_window = driver.current_window_handle
     #print(parent_window)
@@ -107,9 +106,15 @@ for kfzUrl in kfzUrls:
                         #js = "var completeDate=document.getElementById('ctl00_ContentPlaceHolder1_dtbYuJiTime'); completeDate.value='"+completedate+"'"
                         #driver.execute_script(js)
                         driver.find_element_by_id("ctl00_ContentPlaceHolder1_btnSave").click()
-                        element = WebDriverWait(driver,10,2).until(EC.alert_is_present())#显示等待10s
+                        element = WebDriverWait(driver,20,2).until(EC.alert_is_present())#显示等待10s
                         element.accept()
                         driver.switch_to.window(parent_window)
                         print(tds[1].text+","+name)
-
-driver.quit()
+                        #删除已经遍历的键
+                        del projectDicts[tds[1].text]
+finally:
+    # newline:表示换行，默认情况下都是'\n'
+    file = open('info.csv', 'w', encoding='GB2312', newline='')
+    writer = csv.writer(file)
+    writer.writerows(projectDicts.values())
+    driver.quit()
