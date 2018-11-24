@@ -4,7 +4,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions  as EC
-import time 
+import time,sys
 import csv #导入csv包
 
 #定义整改状态
@@ -19,6 +19,10 @@ for projectData in projectDatas:
     projectDicts[projectData[0]]=projectData#使用字典存储项目信息：key：项目名称，value：项目名称、负责人、完成时间、整改状态
     if projectData[1] not in projectLeaders:
         projectLeaders.append(projectData[1])
+
+if len(projectLeaders) <= 0:
+    print("没有需要执行的项目数据")
+    sys.exit()
 
 #启动自动化
 driver= webdriver.Ie()
