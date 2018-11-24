@@ -7,6 +7,8 @@ from selenium.webdriver.support import expected_conditions  as EC
 import time,sys
 import csv #导入csv包
 
+print("开始时间："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
 #定义整改状态
 rectificationState = {"无需整改":"0","已完成":"1","未完成":"2","开发已修复":"3","测试验证":"4","暂缓":"5"}
 projectLeaders = []#定义负责人
@@ -122,3 +124,4 @@ finally:
     writer = csv.writer(file)
     writer.writerows(projectDicts.values())
     driver.quit()
+    print("结束时间："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
