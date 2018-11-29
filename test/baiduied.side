@@ -1,0 +1,50 @@
+{
+  "id": "39d56c7b-c26f-4105-b5a3-1e720276106a",
+  "version": "1.1",
+  "name": "baiduied",
+  "url": "https://www.baidu.com",
+  "tests": [{
+    "id": "eecd4f45-94cc-4d82-b9ff-98483a3bd045",
+    "name": "test",
+    "commands": [{
+      "id": "bdbc68e9-1d90-4ec1-8157-7c908114e745",
+      "comment": "",
+      "command": "type",
+      "target": "id=kw",
+      "targets": [
+        ["id=kw", "id"],
+        ["name=wd", "name"],
+        ["css=#kw", "css"],
+        ["css=#kw", "css:finder"],
+        ["xpath=//input[@id='kw']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/span/input", "xpath:idRelative"],
+        ["xpath=//span/input", "xpath:position"]
+      ],
+      "value": "selenuim ide"
+    }, {
+      "id": "abc11d65-8f97-4299-ad1c-b98c77fda2cd",
+      "comment": "",
+      "command": "click",
+      "target": "id=su",
+      "targets": [
+        ["id=su", "id"],
+        ["css=#su", "css"],
+        ["css=#su", "css:finder"],
+        ["xpath=//input[@id='su']", "xpath:attributes"],
+        ["xpath=//form[@id='form']/span[2]/input", "xpath:idRelative"],
+        ["xpath=//span[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "3d8167f7-e120-4ce3-b6a1-06d669d9844d",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["eecd4f45-94cc-4d82-b9ff-98483a3bd045"]
+  }],
+  "urls": [],
+  "plugins": []
+}

@@ -1,3 +1,4 @@
+import time
 user_info = open('user_info.txt','r')
 lines=user_info.readlines()
 user_info.close()
@@ -10,8 +11,9 @@ rectificationState = {"1":"0","已完成":"1","未完成":"2","开发已修复":
 for i in range(4):
     if str(i) not in rectificationState.keys():
         continue
-    print("获取总页数："+i)
+    print("获取总页数："+str(i))
 name = "王菊(新点软件 - 研发群 - 电子交易产品研发群 - 评标研发2部);"   
 name1 = "戴健（评标研发2部）(新点软件 - 研发群 - 电子交易产品研发群 - 评标研发2部);" 
 print(name.split('(')[0])
 print(name1.replace('（','(').split('(')[0].replace(' ',''))
+print("开始时间："+time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
