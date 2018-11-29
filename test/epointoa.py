@@ -7,8 +7,11 @@ from selenium.webdriver.support import expected_conditions  as EC
 import time,sys
 import csv #导入csv包
 
-#定义整改状态
+#定义 是否整改完成 状态
 rectificationState = {"无需整改":"0","已完成":"1","未完成":"2","开发已修复":"3","测试验证":"4","暂缓":"5"}
+#内部复查结果
+reviewStatus= {"通过":"1","不通过":"0"}
+
 projectLeaders = []#定义负责人
 #读取info.csv中项目信息
 #读取本地csv文件
@@ -55,7 +58,8 @@ print(now_url)
 '''
 
 try:
-    kfzUrl="https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=c50a23db-fc07-48ed-a471-e839aa6887d5"
+    #QA-T-PB-1809-009【重大共性整改】评标系统后台数据表管理去除数据增删改查功能 
+    kfzUrl="https://fdoc.epoint.com.cn/dev/KFZknowledge/Pages/ProjectRecitify/Recitify_Detail.aspx?RowGuid=4ccc505c-2c4a-43c4-a7fc-0f2aab0dd6e3"
     driver.get(kfzUrl)
     parent_window = driver.current_window_handle
     #print(parent_window)
@@ -93,7 +97,8 @@ try:
 
                 project = projectDicts[tds[1].text]#当前需要更改的项目信息
                 ddlIsComplete = rectificationState[project[3]]#是否整改完成
-                dtbYuJiTime = project[2]#是否整改完成
+                dtbYuJiTime = project[2]#预计整改完成时间
+                ddlZiChaJieGuo = reviewStatus[project[4]]#内部复查结果
 
                 #进入编辑页面
                 tds.pop().click()
@@ -104,9 +109,13 @@ try:
                         #print(driver.current_url)
                         driver.switch_to.window(handle)
                         #print(driver.current_url)
-                        Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlIsComplete")).select_by_value(ddlIsComplete)
-                        driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").clear()
-                        driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").send_keys(dtbYuJiTime)
+                        if ddlIsComplete != "": #是否整改完成
+                            Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlIsComplete")).select_by_value(ddlIsComplete)
+                        if ddlZiChaJieGuo != "": #内部复查结果
+                            Select(driver.find_element_by_id("ctl00_ContentPlaceHolder1_ddlZiChaJieGuo")).select_by_value(ddlZiChaJieGuo)
+                        if dtbYuJiTime != "": #预计整改完成时间
+                            driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").clear()
+                            driver.find_element_by_id("ctl00_ContentPlaceHolder1_dtbYuJiTime").send_keys(dtbYuJiTime)
                         #js = "var completeDate=document.getElementById('ctl00_ContentPlaceHolder1_dtbYuJiTime'); completeDate.value='"+completedate+"'"
                         #driver.execute_script(js)
                         driver.find_element_by_id("ctl00_ContentPlaceHolder1_btnSave").click()
